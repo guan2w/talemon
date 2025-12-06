@@ -1,0 +1,116 @@
+# Talemon 可溯源网络数据采集平台配置文件
+# 敏感配置请放置于 .env 文件中
+
+[general]
+# 应用名称
+app_name = "talemon"
+# 运行环境: development | staging | production
+env = "development"
+# 日志级别: DEBUG | INFO | WARNING | ERROR
+log_level = "INFO"
+
+# ========================================
+# 调度器配置
+# ========================================
+[scheduler]
+# 是否启用调度器
+enabled = true
+# 轮询间隔 (秒)
+poll_interval_seconds = 10
+# 僵尸检测间隔 (秒)，默认 5 分钟
+zombie_check_interval_seconds = 300
+# 心跳超时阈值 (秒)，超过此时间视为僵尸任务
+zombie_timeout_seconds = 300
+# 每批获取任务数
+batch_size = 100
+
+# ========================================
+# 采集器配置
+# ========================================
+[worker]
+# 是否启用采集器
+enabled = true
+# 并发采集数
+concurrency = 4
+# 心跳上报间隔 (秒)
+heartbeat_interval_seconds = 30
+# 页面加载超时时间 (秒)
+page_timeout_seconds = 60
+# NetworkIdle 等待时间 (秒)
+network_idle_timeout_seconds = 5
+
+[worker.browser]
+# 是否使用无头模式
+headless = true
+# 浏览器用户数据目录 (用于持久化上下文)
+user_data_dir = "./data/browser_profile"
+# 浏览器扩展目录
+extensions_dir = "./config/extensions"
+# Playwright 可执行文件路径 (留空使用默认)
+executable_path = ""
+
+[worker.rate_limit]
+# 默认请求间隔 (秒)
+default_delay_seconds = 5
+# 单域名最大并发数
+max_concurrent_per_domain = 2
+
+# ========================================
+# 解析器配置
+# ========================================
+[extractor]
+# 是否启用解析器
+enabled = true
+# 轮询间隔 (秒)
+poll_interval_seconds = 5
+# 每批处理记录数
+batch_size = 50
+
+# ========================================
+# 数据库配置
+# ========================================
+[database]
+# 连接池大小
+pool_size = 10
+# 连接池溢出上限
+max_overflow = 20
+# 获取连接超时时间 (秒)
+pool_timeout_seconds = 30
+# 是否打印 SQL 语句 (开发调试用)
+echo_sql = false
+# 连接字符串在 .env 中配置: DATABASE_URL
+
+# ========================================
+# OSS 存储配置
+# ========================================
+[oss]
+# OSS Bucket 名称
+bucket = "talemon-data"
+# OSS Endpoint (不含协议前缀)
+endpoint = "oss-cn-hangzhou.aliyuncs.com"
+# 存储路径前缀
+prefix = "data"
+# 上传超时时间 (秒)
+upload_timeout_seconds = 120
+# 凭证在 .env 中配置: OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET
+
+[oss.path]
+# 路径模板，可用变量: {url_hash}, {timestamp}
+template = "{url_hash}/{timestamp}/"
+# 时间戳格式: YYMMDD.HHMMSS
+timestamp_format = "%y%m%d.%H%M%S"
+
+# ========================================
+# Clean Hash 算法配置
+# ========================================
+[hasher]
+# 需要移除的 HTML 标签
+strip_tags = ["script", "style", "iframe", "noscript", "meta", "link", "svg"]
+# 需要提取的属性 (用于特征提取)
+extract_attrs = ["href", "src", "alt", "title"]
+# 广告容器的 CSS 选择器 (用于移除插件漏掉的广告)
+ad_selectors = [
+    ".ad", ".ads", ".advertisement",
+    "[id*='ad-']", "[class*='ad-']",
+    ".sponsored", ".promo"
+]
