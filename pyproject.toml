@@ -1,0 +1,24 @@
+[project]
+name = "talemon"
+version = "0.1.0"
+description = "Talemon 可溯源网络数据采集平台"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncpg>=0.29.0",
+    "cssselect>=1.2.0",
+    "loguru>=0.7.2",
+    "lxml[html-clean]>=4.9.3",
+    "oss2>=2.18.0",
+    "playwright>=1.40.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "python-dotenv>=1.0.0",
+    "sqlalchemy[asyncio]>=2.0.23",
+    "tomli>=2.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+]
