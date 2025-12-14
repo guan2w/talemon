@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Optional
 
 import tomli
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -69,16 +69,53 @@ class ExtractorSettings(BaseSettings):
 
 class DatabaseSettings(BaseSettings):
     """数据库设置。"""
-    model_config = SettingsConfigDict(env_prefix="")
-    
-    database_url: str = Field(
-        default="postgresql+asyncpg://postgres:postgres@localhost:5432/talemon",
-        alias="DATABASE_URL"
+    model_config = SettingsConfigDict(
+        env_prefix="",
+        env_file=".env", 
+        env_file_encoding="utf-8",
+        extra="ignore"
     )
+    
+    # 允许直接配置完整 URL
+    database_url: Optional[str] = Field(default=None, alias="DATABASE_URL")
+    
+    # 也可以通过单独的字段配置
+    db_host: Optional[str] = Field(default=None, alias="DB_HOST")
+    db_port: Optional[int] = Field(default=None, alias="DB_PORT")
+    db_user: Optional[str] = Field(default=None, alias="DB_USER")
+    db_password: Optional[str] = Field(default=None, alias="DB_PASSWORD")
+    db_name: Optional[str] = Field(default=None, alias="DB_NAME")
+    
     pool_size: int = 10
     max_overflow: int = 20
     pool_timeout_seconds: int = 30
     echo_sql: bool = False
+
+    @model_validator(mode='after')
+    def validate_connection_config(self) -> 'DatabaseSettings':
+        """验证并构建连接配置。"""
+        if self.database_url:
+            return self
+
+        # 如果没有 database_url，则必须有全套单独配置
+        missing_fields = []
+        if not self.db_host: missing_fields.append("DB_HOST")
+        if not self.db_port: missing_fields.append("DB_PORT")
+        if not self.db_user: missing_fields.append("DB_USER")
+        if not self.db_password: missing_fields.append("DB_PASSWORD")
+        if not self.db_name: missing_fields.append("DB_NAME")
+
+        if missing_fields:
+            raise ValueError(
+                f"Missing database configuration. Must provide either DATABASE_URL or all of: {', '.join(missing_fields)}"
+            )
+
+        # 默认为 PostgreSQL + AsyncPG
+        self.database_url = (
+            f"postgresql+asyncpg://{self.db_user}:{self.db_password}@"
+            f"{self.db_host}:{self.db_port}/{self.db_name}"
+        )
+        return self
 
 
 class OSSPathSettings(BaseSettings):
