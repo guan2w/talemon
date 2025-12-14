@@ -1,39 +1,39 @@
 # Talemon
 
-Traceable Web Data Collection Platform.
+可溯源网络数据采集平台。
 
-## Environment Management
+## 环境管理
 
-This project uses [uv](https://github.com/astral-sh/uv) for dependency management.
+本项目使用 [uv](https://github.com/astral-sh/uv) 进行依赖管理。
 
-### Prerequisites
+### 前置要求
 
 - Python 3.12+
-- `uv` installed (see [uv installation guide](https://github.com/astral-sh/uv?tab=readme-ov-file#installation))
+- 已安装 `uv` (参见 [uv 安装指南](https://github.com/astral-sh/uv?tab=readme-ov-file#installation))
 
-### Setup
+### 设置
 
-1. **Install dependencies**:
+1. **安装依赖**:
    ```bash
    uv sync
    ```
-   This will create a virtual environment in `.venv` and install the locked dependencies.
+   这将创建一个虚拟环境 `.venv` 并安装锁定的依赖项。
 
-2. **Activate environment**:
+2. **激活环境**:
    - Windows: `.venv\Scripts\activate`
    - Unix/MacOS: `source .venv/bin/activate`
 
-3. **Add a dependency**:
+3. **添加依赖**:
    ```bash
    uv add <package_name>
    ```
 
-4. **Add a development dependency**:
+4. **添加开发依赖**:
    ```bash
    uv add --dev <package_name>
    ```
 
-5. **Run tests**:
+5. **运行测试**:
    ```bash
    uv run pytest
    ```

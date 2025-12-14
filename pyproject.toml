@@ -10,6 +10,7 @@ dependencies = [
     "lxml[html-clean]>=4.9.3",
     "oss2>=2.18.0",
     "playwright>=1.40.0",
+    "psycopg2>=2.9.11",
     "pydantic>=2.5.0",
     "pydantic-settings>=2.1.0",
     "python-dotenv>=1.0.0",
